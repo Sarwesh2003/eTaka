@@ -1,0 +1,102 @@
+sarwesh@sarwesh-HP-Laptop-15-da0xxx:~/Desktop/Tutorial/Load Balancer/Documentation$ ab -n 500 -c 10 -m POST -s 120 -g res_lb.tsv "http://localhost:8080/post?Lat=19.704656&Long=74.248489&date=2022-07-01&end_dt=2022-07-30"
+This is ApacheBench, Version 2.3 <$Revision: 1879490 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking localhost (be patient)
+Completed 100 requests
+Completed 200 requests
+Completed 300 requests
+Completed 400 requests
+Completed 500 requests
+Finished 500 requests
+
+
+Server Software:        nginx/1.23.3
+Server Hostname:        localhost
+Server Port:            8080
+
+Document Path:          /post?Lat=19.704656&Long=74.248489&date=2022-07-01&end_dt=2022-07-30
+Document Length:        1255 bytes
+
+Concurrency Level:      10
+Time taken for tests:   224.053 seconds
+Complete requests:      500
+Failed requests:        0
+Total transferred:      719000 bytes
+HTML transferred:       627500 bytes
+Requests per second:    2.23 [#/sec] (mean)
+Time per request:       4481.062 [ms] (mean)
+Time per request:       448.106 [ms] (mean, across all concurrent requests)
+Transfer rate:          3.13 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.3      0       5
+Processing:   918 4385 2622.9   3802   16517
+Waiting:      918 4384 2622.9   3802   16517
+Total:        918 4385 2622.9   3802   16517
+
+Percentage of the requests served within a certain time (ms)
+  50%   3802
+  66%   4562
+  75%   5547
+  80%   6184
+  90%   7897
+  95%   9097
+  98%  12513
+  99%  14879
+ 100%  16517 (longest request)
+
+|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||NORMAL REQUEST|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+sarwesh@sarwesh-HP-Laptop-15-da0xxx:~/Desktop/Tutorial/Load Balancer/Documentation$ ab -n 500 -c 10 -m POST -s 120 -g res_normal_500req.tsv "http://localhost:5000/post?Lat=19.704656&Long=74.248489&date=2022-07-01&end_dt=2022-07-30"
+This is ApacheBench, Version 2.3 <$Revision: 1879490 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking localhost (be patient)
+Completed 100 requests
+Completed 200 requests
+Completed 300 requests
+Completed 400 requests
+Completed 500 requests
+Finished 500 requests
+
+
+Server Software:        gunicorn
+Server Hostname:        localhost
+Server Port:            5000
+
+Document Path:          /post?Lat=19.704656&Long=74.248489&date=2022-07-01&end_dt=2022-07-30
+Document Length:        1255 bytes
+
+Concurrency Level:      10
+Time taken for tests:   297.676 seconds
+Complete requests:      500
+Failed requests:        0
+Total transferred:      717000 bytes
+HTML transferred:       627500 bytes
+Requests per second:    1.68 [#/sec] (mean)
+Time per request:       5953.521 [ms] (mean)
+Time per request:       595.352 [ms] (mean, across all concurrent requests)
+Transfer rate:          2.35 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   1.3      0      12
+Processing:  1246 5770 3931.4   3569   26011
+Waiting:     1235 5770 3931.5   3569   26010
+Total:       1248 5770 3931.3   3569   26011
+
+Percentage of the requests served within a certain time (ms)
+  50%   3569
+  66%   6750
+  75%   8399
+  80%   8986
+  90%  11389
+  95%  13307
+  98%  16207
+  99%  19608
+ 100%  26011 (longest request)
+

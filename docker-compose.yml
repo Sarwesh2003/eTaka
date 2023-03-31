@@ -1,0 +1,21 @@
+version: '3'
+services:
+  app1:
+    build: ./app1
+    network_mode: "bridge"
+    ports:
+    - "5001:5000"
+
+  app2:
+    build: ./app2
+    network_mode: "bridge"
+    ports:
+    - "5002:5000"
+  nginx:
+    build: ./nginx
+    network_mode: "bridge"
+    ports:
+    - "8080:80"
+    depends_on:
+      - app1
+      - app2
