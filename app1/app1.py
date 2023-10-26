@@ -1,15 +1,22 @@
+
+import os
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from os.path import dirname, join
+import imageio
+import werkzeug
 import joblib
 import requests
 import json
 import numpy as np
 import time
+from tensorflow.keras import models as tf_models
+import cv2
+import tensorflow_hub as hub
 app1 = Flask(__name__)
 CORS(app1)
 current_dir = dirname(__file__)
-model = joblib.load('./templates/model.pkl')
+model = joblib.load('{}/templates/model.pkl'.format(current_dir))
 class DecodeJSON(object):
     def __init__(self, data):
 	    self.__dict__ = json.loads(data)
@@ -258,6 +265,41 @@ class MakeCropRecommendation:
 def home():
     return "Agri11"
 
+
+@app1.route('/imageAnalysis', methods = ['GET', 'POST'])
+def ImageAnalysis():
+    imagefile = request.files['image']
+    filename = filename = werkzeug.utils.secure_filename(imagefile.filename)
+    imagefile.save(filename)
+    img = cv2.imread(filename)
+    print(filename)
+    img_resize = cv2.resize(img,(224,224))
+    # if img.shape != (224, 224):
+    #     return "Image size mismatch"
+    img_scaled = img_resize/255
+
+    img_reshaped = np.reshape(img_scaled,[1,224,224,3])
+    image_model = tf_models.load_model(
+       "{}\\templates\image_model.h5".format(current_dir),
+       custom_objects={'KerasLayer':hub.KerasLayer}
+    )
+    input_pred = image_model.predict(img_reshaped)
+    input_label = np.argmax(input_pred)
+    print(input_label)
+    if input_label == 0:
+        return "Black Soil"
+    elif input_label == 1:
+        return "Cinder Soil"
+    elif input_label == 2:
+        return "Laterite Soil"
+    elif input_label == 3:
+        return "Peat Soil"
+    elif input_label == 4:
+        return "Yellow Soil"
+    else:
+        return "Try Again!"
+    
+
 @app1.route('/post',methods=['POST'])
 def predict():
     lat = str(request.args.get('Lat'))
@@ -280,4 +322,4 @@ def predict():
     return jsonify(pred)
 
 if __name__ == "__main__":
-    app1.run(debug=True)
+    app1.run(host="0.0.0.0", port=os.environ.get('PORT', 5000),debug=True)
